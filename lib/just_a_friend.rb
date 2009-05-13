@@ -1,3 +1,4 @@
+require 'optparse'
 require 'typhoeus'
 require 'json'
 
@@ -30,4 +31,31 @@ class Delicious
                   :base_uri => 'http://delicious.com'
   
   define_remote_method :user_bookmarks, :path => '/:username'
+end
+
+class JustAFriend
+  
+  def self.main
+    
+    op = OptionParser.new do |opts|
+      opts.banner = 'Usage: just_a_friend [options] <username>'
+      opts.separator 'Options:'
+      opts.on('-h', '--help', 'Display this message') do |h|
+        STDOUT.puts opts
+        exit
+      end
+    end
+    
+    op.parse!(ARGV)
+    
+    if ARGV.length != 1
+      puts "Missing required screen name parameter."
+      exit
+    end
+    
+    username = ARGV[0]
+    friends = Twitter.friends(:params => {:screen_name => username})
+    friends.map { |f| puts "#{f['name']} - #{f['screen_name']} - #{Delicious.user_bookmarks(:username => f['screen_name'])}" }
+  end
+  
 end
