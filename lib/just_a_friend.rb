@@ -31,9 +31,3 @@ class Delicious
   
   define_remote_method :user_bookmarks, :path => '/:username'
 end
-
-if __FILE__ == $PROGRAM_NAME
-  username = 'therealadam'
-  friends = Twitter.friends(:params => {:screen_name => username})
-  friends.map { |f| puts "#{f['name']} - #{f['screen_name']} - #{Delicious.user_bookmarks(:username => f['screen_name'])}" }
-end
